@@ -1,0 +1,159 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package codeclause;
+
+/**
+ *
+ * @author akash
+ */
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
+
+class Student {
+
+    private String rollNumber;
+    private String name;
+
+    public Student(String rollNumber, String name) {
+        this.rollNumber = rollNumber;
+        this.name = name;
+    }
+
+    public String getRollNumber() {
+        return rollNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+
+class Exam {
+
+    private String examName;
+    private List<Student> enrolledStudents;
+    private int totalSeats;
+
+    public Exam(String examName, int totalSeats) {
+        this.examName = examName;
+        this.totalSeats = totalSeats;
+        this.enrolledStudents = new ArrayList<>();
+    }
+
+    public String getExamName() {
+        return examName;
+    }
+
+    public int getTotalSeats() {
+        return totalSeats;
+    }
+
+    public void enrollStudent(Student student) {
+        enrolledStudents.add(student);
+    }
+
+    public List<Student> getEnrolledStudents() {
+        return enrolledStudents;
+    }
+}
+
+class Room {
+
+    private String roomNumber;
+    private int capacity;
+
+    public Room(String roomNumber, int capacity) {
+        this.roomNumber = roomNumber;
+        this.capacity = capacity;
+    }
+
+    public String getRoomNumber() {
+        return roomNumber;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+}
+
+public class ExamSeatingSystem {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Get exam details from the user
+        System.out.print("Enter the name of the exam: ");
+        String examName = scanner.nextLine();
+
+        System.out.print("Enter the total number of seats in the exam room: ");
+        int totalSeats = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        Exam finalExam = new Exam(examName, totalSeats);
+
+        // Get student details and enroll students
+        while (true) {
+            System.out.print("Enter student's roll number (or 'exit' to finish): ");
+            String rollNumber = scanner.nextLine();
+
+            if (rollNumber.equalsIgnoreCase("exit")) {
+                break;
+            }
+
+            System.out.print("Enter student's name: ");
+            String name = scanner.nextLine();
+
+            finalExam.enrollStudent(new Student(rollNumber, name));
+        }
+
+        // Get room details from the user
+        System.out.print("Enter the room number for the exam: ");
+        String roomNumber = scanner.nextLine();
+
+        System.out.print("Enter the capacity of the exam room: ");
+        int roomCapacity = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        Room examRoom = new Room(roomNumber, roomCapacity);
+
+        // Display enrolled students
+        displayEnrolledStudents(finalExam);
+
+        // Generate seating arrangement
+        generateSeatingArrangement(finalExam, examRoom);
+
+        // Close the scanner
+        scanner.close();
+    }
+
+    public static void displayEnrolledStudents(Exam exam) {
+        System.out.println("Enrolled Students for " + exam.getExamName() + ":");
+        for (Student student : exam.getEnrolledStudents()) {
+            System.out.println(student.getRollNumber() + " - " + student.getName());
+        }
+        System.out.println();
+    }
+
+    public static void generateSeatingArrangement(Exam exam, Room room) {
+        // Validate capacity
+        if (exam.getTotalSeats() > room.getCapacity()) {
+            System.out.println("Error: Insufficient seats in the room.");
+            return;
+        }
+
+        // Shuffle the enrolled students to randomize seating arrangement
+        List<Student> shuffledStudents = new ArrayList<>(exam.getEnrolledStudents());
+        Collections.shuffle(shuffledStudents);
+
+        // Display seating arrangement
+        System.out.println("Seating Arrangement for " + exam.getExamName() + " in Room " + room.getRoomNumber() + ":");
+        for (int i = 0; i < shuffledStudents.size(); i++) {
+            Student student = shuffledStudents.get(i);
+            System.out.println("Seat " + (i + 1) + ": " + student.getRollNumber() + " - " + student.getName());
+        }
+    }
+}
