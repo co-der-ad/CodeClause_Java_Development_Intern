@@ -1,0 +1,137 @@
+package codeclause;
+
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+/**
+ *
+ * @author akash
+ */
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Book {
+
+    private String title;
+    private String author;
+    private boolean available;
+
+    public Book(String title, String author) {
+        this.title = title;
+        this.author = author;
+        this.available = true;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+}
+
+class Library {
+
+    private ArrayList<Book> books;
+
+    public Library() {
+        this.books = new ArrayList<>();
+    }
+
+    public void addBook(Book book) {
+        books.add(book);
+    }
+
+    public void displayBooks() {
+        System.out.println("Library Books:");
+        for (Book book : books) {
+            System.out.println(book.getTitle() + " by " + book.getAuthor()
+                    + " - Available: " + (book.isAvailable() ? "Yes" : "No"));
+        }
+        System.out.println();
+    }
+
+    public boolean issueBook(String title) {
+        for (Book book : books) {
+            if (book.getTitle().equalsIgnoreCase(title) && book.isAvailable()) {
+                book.setAvailable(false);
+                System.out.println("Book issued successfully: " + book.getTitle());
+                return true;
+            }
+        }
+        System.out.println("Book not available for issue: " + title);
+        return false;
+    }
+
+    public boolean returnBook(String title) {
+        for (Book book : books) {
+            if (book.getTitle().equalsIgnoreCase(title) && !book.isAvailable()) {
+                book.setAvailable(true);
+                System.out.println("Book returned successfully: " + book.getTitle());
+                return true;
+            }
+        }
+        System.out.println("Book not found or already returned: " + title);
+        return false;
+    }
+}
+
+public class LibrarySystem {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Library library = new Library();
+
+        // Adding some sample books
+        library.addBook(new Book("Java Programming", "John Smith"));
+        library.addBook(new Book("Data Structures", "Alice Johnson"));
+
+        while (true) {
+            System.out.println("1. Display Books");
+            System.out.println("2. Issue Book");
+            System.out.println("3. Return Book");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+
+            // Validate input to ensure it's an integer
+            while (!scanner.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.next(); // Consume the invalid input
+            }
+
+            int choice = scanner.nextInt();
+            scanner.nextLine();  // Consume the newline character
+
+            switch (choice) {
+                case 1:
+                    library.displayBooks();
+                    break;
+                case 2:
+                    System.out.print("Enter the title of the book to issue: ");
+                    String issueTitle = scanner.nextLine();
+                    library.issueBook(issueTitle);
+                    break;
+                case 3:
+                    System.out.print("Enter the title of the book to return: ");
+                    String returnTitle = scanner.nextLine();
+                    library.returnBook(returnTitle);
+                    break;
+                case 4:
+                    System.out.println("Exiting the Library System. Goodbye!");
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid choice. Please enter a valid option.");
+            }
+        }
+    }
+}
